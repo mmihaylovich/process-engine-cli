@@ -4,20 +4,32 @@
   "description": "Watch corezoid processes for changes ",
   "main": "./src/index.js",
   "dependencies": {
+    "@types/circular-json": "^0.1.30",
     "assert": "^1.4.1",
+    "circular-json": "^0.3.1",
+    "config": "^1.26.1",
     "dotenv": "^4.0.0",
+    "inversify": "^4.1.0",
+    "lodash": "^4.17.4",
+    "log4js": "^1.1.1",
+    "reflect-metadata": "^0.1.10",
     "restify": "^4.3.0",
     "rxjs": "^5.4.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.64",
+    "@types/log4js": "0.0.32",
     "@types/assert": "0.0.31",
+    "@types/config": "0.0.32",
     "@types/core-js": "^0.9.41",
     "@types/node": "^7.0.22",
+    "@types/restify": "^4.3.2",
     "@types/rx": "^4.1.1",
     "typescript": "^2.3.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "prestart": "npm run build",
     "start": "node built/index.js",
     "build": "tsc"
   },

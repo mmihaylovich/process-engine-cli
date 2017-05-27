@@ -1,0 +1,12 @@
+{
+    "corezoid" : {
+        "api_url" : "https://api.corezoid.com/",
+        /*
+            Аутентификационные данные должны быть в .env или в системных переменных
+            COREZOID_API_LOGIN=NNNNNN
+            COREZOID_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        */
+        "refresh_interval" : 15
+    }
+
+}
