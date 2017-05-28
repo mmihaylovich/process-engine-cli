@@ -1,6 +1,7 @@
 import * as consts from './corezoid-consts';
 import { ifError } from 'assert';
 import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs/Observer';
 import { Subject } from 'rxjs/Subject';
 import { ErrorResult } from '../entity/ErrorResult';
 import * as config from 'config';
@@ -25,7 +26,8 @@ class Corezoid {
         this._interval = config.get<number>('corezoid.refresh_interval');
         this._folderId = config.get<number>('corezoid.folder_id');
         this._client = restify.createJsonClient({
-            url: this._url
+            url: this._url,
+            headers : { 'Cookie': process.env.COREZOID_API_COOKIES }
         });
     }
 
@@ -62,27 +64,25 @@ class Corezoid {
         return result;
     }
 
-    getFolders(): Observable<Object> {
-        const subject: Subject<Object> = new Subject();
-        subject.share();
-        consts.CRZ_REQ_FOLDER[1].ops[0].obj_id = this._folderId;
-        StringUtils.refreshRequest(consts.CRZ_REQ_FOLDER);
+    private appendAuthDownload(url: string, body: string): string {
+        let result = url;
+        const epoch = new Date().getTime().toString();
+        const login = process.env.COREZOID_API_LOGIN;
+        const secret = process.env.COREZOID_API_KEY;
+        const signature = sha1( epoch + secret + body + secret);
+        if (!result.endsWith('/')) {
+            result = result + '/';
+        }
+        result = `${result}${login}/${epoch}/${signature}`;
 
-        const body = <string>consts.CRZ_REQ_FOLDER[2];
-        Corezoid.logger.debug('Request body:' + body);
+        return result;
+    }
 
-        this._client.post(this.appendAuth(consts.CRZ_API_2_URL, body)
-            , consts.CRZ_REQ_FOLDER[1]
-            , function (err: any, req: any, res: any, obj: any) {
-                if (err) {
-                    subject.error(new ErrorResult('ERAPI', err.message));
-                } else {
-                    subject.next(obj);
-                    subject.complete();
-                }
-                Corezoid.logger.debug(
-                    `
+    private logHttp(err: any, req: any, res: any, obj: any, reqBody: any): void {
+        Corezoid.logger.debug(
+            `
 ======== BEGIN ============
+${reqBody}
 ======== ERROR ============
 ${StringUtils.serializeError(err)}
 ======== REQUEST ==========
@@ -93,12 +93,132 @@ ${StringUtils.serializeResponse(res)}
 ${StringUtils.serializeObject(obj)}
 ======== END ==============
 `
-                );
+        );
+    }
+
+    getFolders2(): any {
+        const dirs = this.expanddir(this._folderId);
+        return dirs;
+        // Corezoid.logger.info(`Dirs: ${JSON.stringify(dirs)}`);
+    }
+
+    getBody(object_id: number, object_type: string): Observable<any> {
+        const subject: Subject<any> = new Subject();
+        const that = this;
+
+        consts.CRZ_REQ_SCHEME[1].ops[0].obj_type = object_type;
+        consts.CRZ_REQ_SCHEME[1].ops[0].obj_id = object_id;
+        StringUtils.refreshRequest(consts.CRZ_REQ_SCHEME);
+
+        const body = <string>consts.CRZ_REQ_SCHEME[2];
+        Corezoid.logger.debug('Request body:' + body);
+
+        this._client.post(consts.CRZ_API_2_URL_DOWNLOAD
+            , consts.CRZ_REQ_SCHEME[1]
+            , function (err: any, req: any, res: any, obj: any) {
+                if (err) {
+                    subject.error(new ErrorResult('ERAPI', err.message));
+                } else {
+                    subject.next(obj);
+                    subject.complete();
+                }
+                that.logHttp(err, req, res, obj, body);
             });
-        subject.subscribe()
+
+
+        return subject;
+        // 228870
+    }
+
+    getFolders(): Observable<Object> {
+        const that = this;
+        const subject: Subject<Object> = new Subject();
+
+        consts.CRZ_REQ_FOLDER[1].ops[0].obj_id = this._folderId;
+        StringUtils.refreshRequest(consts.CRZ_REQ_FOLDER);
+
+        const body = <string>consts.CRZ_REQ_FOLDER[2];
+        Corezoid.logger.debug('Request body:' + body);
+
+        this._client.post(consts.CRZ_API_2_URL
+            , consts.CRZ_REQ_FOLDER[1]
+            , function (err: any, req: any, res: any, obj: any) {
+                if (err) {
+                    subject.error(new ErrorResult('ERAPI', err.message));
+                } else {
+                    subject.next(obj);
+                    subject.complete();
+                }
+                that.logHttp(err, req, res, obj, body);
+            });
 
         return subject;
     }
-}
+
+
+    //
+    // Asynchronously reads the files in the directory and emits an Array of dir + filename.
+    //
+    private readdir(folder: number): any {
+        const that = this;
+        return Observable.create(function (observer: Observer<any>) {
+            /*fs.readdir(dir, function cb(e, files) {
+                if (e) return observer.onError(e);
+                observer.onNext(files.map(function (file) {
+                    return dir + file;
+                }));
+                observer.onCompleted();
+            });*/
+            // проставим интересующий нас id в шаблон запроса
+            consts.CRZ_REQ_FOLDER[1].ops[0].obj_id = folder;
+            // обновим отправляемое тело запроса
+            StringUtils.refreshRequest(consts.CRZ_REQ_FOLDER);
+            const body = <string>consts.CRZ_REQ_FOLDER[2];
+            Corezoid.logger.debug('Request body:' + body);
+
+            that._client.post(that.appendAuth(consts.CRZ_API_2_URL, body)
+                , consts.CRZ_REQ_FOLDER[1]
+                , function (err: any, req: any, res: any, obj: any) {
+                    that.logHttp(err, req, res, obj, body);
+                    if (err) {
+                        return observer.error(err);
+                    }
+
+                    observer.next(obj.ops[0].list.map(
+                        function (item: any) {
+                            return {
+                                obj_type: item.obj_type
+                                , obj_id: item.obj_id
+                                , title: item.title
+                                , parent_obj_id: obj.ops[0].obj_id
+                            };
+                        })
+                    );
+                    observer.complete();
+                });
+
+        });
+    };
+
+    //
+    // Asynchronously list the file stats of a directory.
+    //
+    private ls(folder: number) {
+        return this.readdir(folder).flatMap(function (files: any) {
+            Corezoid.logger.info(files);
+            return files;
+        });
+    }
+
+    private expanddir(folder: number) {
+        const that = this;
+        return that.ls(folder)
+            .expand(function (x: any) {
+                return x.obj_type !== 'folder' ?
+                    Observable.empty() :
+                    that.ls(x.obj_id)
+            })
+    }
+};
 
 export { Corezoid }
