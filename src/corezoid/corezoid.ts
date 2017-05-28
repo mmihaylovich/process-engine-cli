@@ -27,7 +27,7 @@ class Corezoid {
         this._folderId = config.get<number>('corezoid.folder_id');
         this._client = restify.createJsonClient({
             url: this._url,
-            headers : { 'Cookie': process.env.COREZOID_API_COOKIES }
+            headers: { 'Cookie': process.env.COREZOID_API_COOKIES }
         });
     }
 
@@ -69,7 +69,7 @@ class Corezoid {
         const epoch = new Date().getTime().toString();
         const login = process.env.COREZOID_API_LOGIN;
         const secret = process.env.COREZOID_API_KEY;
-        const signature = sha1( epoch + secret + body + secret);
+        const signature = sha1(epoch + secret + body + secret);
         if (!result.endsWith('/')) {
             result = result + '/';
         }
@@ -96,10 +96,8 @@ ${StringUtils.serializeObject(obj)}
         );
     }
 
-    getFolders2(): any {
-        const dirs = this.expanddir(this._folderId);
-        return dirs;
-        // Corezoid.logger.info(`Dirs: ${JSON.stringify(dirs)}`);
+    getFolders2(): Observable<any> {
+        return this.expanddir(this._folderId);
     }
 
     getBody(object_id: number, object_type: string): Observable<any> {
@@ -127,7 +125,6 @@ ${StringUtils.serializeObject(obj)}
 
 
         return subject;
-        // 228870
     }
 
     getFolders(): Observable<Object> {
@@ -159,7 +156,7 @@ ${StringUtils.serializeObject(obj)}
     //
     // Asynchronously reads the files in the directory and emits an Array of dir + filename.
     //
-    private readdir(folder: number): any {
+    private readdir(folder: number): Observable<any> {
         const that = this;
         return Observable.create(function (observer: Observer<any>) {
             /*fs.readdir(dir, function cb(e, files) {
@@ -203,14 +200,44 @@ ${StringUtils.serializeObject(obj)}
     //
     // Asynchronously list the file stats of a directory.
     //
-    private ls(folder: number) {
+    private ls(folder: number): Observable<any> {
+        const that = this;
         return this.readdir(folder).flatMap(function (files: any) {
-            Corezoid.logger.info(files);
-            return files;
+            return Observable.from(files).flatMap( (files2: any) => that.enrich(files2));
         });
     }
 
-    private expanddir(folder: number) {
+    private enrich(item: any) {
+        const that = this;
+        return Observable.create(function (observer: any) {
+            if (item.obj_type === 'folder') {
+                observer.next(item);
+                observer.complete();
+            } else {
+                consts.CRZ_REQ_SCHEME[1].ops[0].obj_type = item.obj_type;
+                consts.CRZ_REQ_SCHEME[1].ops[0].obj_id = item.obj_id;
+                StringUtils.refreshRequest(consts.CRZ_REQ_SCHEME);
+
+                const body = <string>consts.CRZ_REQ_SCHEME[2];
+                Corezoid.logger.debug('Request body:' + body);
+
+                that._client.post(consts.CRZ_API_2_URL_DOWNLOAD
+                    , consts.CRZ_REQ_SCHEME[1]
+                    , function (err: any, req: any, res: any, obj: any) {
+                        if (err) {
+                            observer.error(new ErrorResult('ERAPI', err.message));
+                        } else {
+                            item.body = obj;
+                            observer.next(item);
+                            observer.complete();
+                        }
+                        that.logHttp(err, req, res, obj, body);
+                    });
+            }
+        });
+    };
+
+    private expanddir(folder: number): Observable<any> {
         const that = this;
         return that.ls(folder)
             .expand(function (x: any) {
