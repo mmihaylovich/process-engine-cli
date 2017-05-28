@@ -14,6 +14,7 @@ class Corezoid {
     private _interval: number
     private _url: string
     private _client: any
+    private _folderId: number
 
     constructor() {
         this._init();
@@ -22,6 +23,7 @@ class Corezoid {
     private _init(): void {
         this._url = config.get<string>('corezoid.api_url');
         this._interval = config.get<number>('corezoid.refresh_interval');
+        this._folderId = config.get<number>('corezoid.folder_id');
         this._client = restify.createJsonClient({
             url: this._url
         });
@@ -62,10 +64,15 @@ class Corezoid {
 
     getFolders(): Observable<Object> {
         const subject: Subject<Object> = new Subject();
-        const body = consts.CRZ_REQ_GET_FOLDER;
+        subject.share();
+        consts.CRZ_REQ_FOLDER[1].ops[0].obj_id = this._folderId;
+        StringUtils.refreshRequest(consts.CRZ_REQ_FOLDER);
+
+        const body = <string>consts.CRZ_REQ_FOLDER[2];
+        Corezoid.logger.debug('Request body:' + body);
 
         this._client.post(this.appendAuth(consts.CRZ_API_2_URL, body)
-            , JSON.parse(body)
+            , consts.CRZ_REQ_FOLDER[1]
             , function (err: any, req: any, res: any, obj: any) {
                 if (err) {
                     subject.error(new ErrorResult('ERAPI', err.message));
@@ -88,6 +95,8 @@ ${StringUtils.serializeObject(obj)}
 `
                 );
             });
+        subject.subscribe()
+
         return subject;
     }
 }

@@ -1,0 +1,291 @@
+https://www.reddit.com/r/javascript/comments/3abv2k/how_can_i_do_a_recursive_readdir_with_rxjs_or_any/
+
+You need to use RxJS's expand operator.
+
+You can look at this little project I started a while ago for reference, but the relevant bits have been translated here:
+
+var fs = require('fs');
+var Rx = require('rx');
+var Path = require('path');
+// 
+// Recursively asynchronously enumerates the descendent
+// files and directories of the given root directory.
+// 
+function expanddir(dir) {
+    return ls(dir)
+        .expand(function(x) {
+            return x.stat.isFile() ?
+                Rx.Observable.empty() :
+                ls(x.path)
+        })
+        .where(function(x) {
+            return x.stat;
+        });
+};
+// 
+// Asynchronously list the file stats of a directory.
+// 
+function ls(dir) {
+    return readdir(dir).flatMap(function(files) {
+        return Rx.Observable.fromArray(files.map(stat));
+    });
+};
+// 
+// Asynchronously reads the files in the directory and emits an Array of dir + filename.
+// 
+function readdir(dir) {
+    return Rx.Observable.create(function(observer) {
+        fs.readdir(dir, function cb(e, files) {
+            if(e) return observer.onError(e);
+            observer.onNext(files.map(function(file) {
+                return dir + file;
+            }));
+            observer.onCompleted();
+        });
+    });
+};
+// 
+// Asynchronously reads the stats of the item at the path.
+// 
+function stat(path) {
+    return Rx.Observable.create(function(observer) {
+        fs.stat(path, function cb(e, stat) {
+            if(e) return observer.onError(e);
+            var data = getFilenameMetaData(path || '');
+            data.stat = stat;
+            observer.onNext(data);
+            observer.onCompleted();
+        });
+    });
+};
+function getFilenameMetaData(path) {
+    var extension = Path.extname(path);
+    return {
+        extension: Path.extname(path),
+        name:      Path.basename(path, extension),
+        location:  Path.dirname(path),
+        path:      path
+    };
+};
+
+
+
+Пример ответа :
+
+{
+    "request_proc": "ok",
+    "ops": [{
+        "id": "",
+        "obj": "folder",
+        "obj_id": 133475,
+        "proc": "ok",
+        "parent_folder_id": 0,
+        "parent_folder_title": "Root folder",
+        "list": [{
+            "is_shared": true,
+            "favorite": false,
+            "privs": [{
+                "type": "delete",
+                "list_obj": ["all"]
+            }, {
+                "type": "create",
+                "list_obj": ["all"]
+            }, {
+                "type": "view",
+                "list_obj": ["all"]
+            }, {
+                "type": "modify",
+                "list_obj": ["all"]
+            }],
+            "childs": 2,
+            "size": 3,
+            "obj_id": 133718,
+            "obj_type": "folder",
+            "obj_type_int": 0,
+            "create_time": 1494842608,
+            "change_time": 1494842608,
+            "is_owner": false,
+            "owner_name": "Mikhail Domislavsky",
+            "owner_id": 55354,
+            "owner_login": "380506208301",
+            "title": "CurrencyTrade",
+            "description": "",
+            "company_id": null
+        }, {
+            "is_shared": true,
+            "favorite": false,
+            "privs": [{
+                "type": "delete",
+                "list_obj": ["all"]
+            }, {
+                "type": "create",
+                "list_obj": ["all"]
+            }, {
+                "type": "view",
+                "list_obj": ["all"]
+            }, {
+                "type": "modify",
+                "list_obj": ["all"]
+            }],
+            "childs": 1,
+            "size": 1,
+            "obj_id": 134065,
+            "obj_type": "folder",
+            "obj_type_int": 0,
+            "create_time": 1495020914,
+            "change_time": 1495020914,
+            "is_owner": false,
+            "owner_name": "Mikhail Domislavsky",
+            "owner_id": 55354,
+            "owner_login": "380506208301",
+            "title": "CopyImplemetedWithMiddleWare",
+            "description": "",
+            "company_id": null
+        }, {
+            "is_shared": true,
+            "favorite": false,
+            "privs": [{
+                "type": "delete",
+                "list_obj": ["all"]
+            }, {
+                "type": "create",
+                "list_obj": ["all"]
+            }, {
+                "type": "view",
+                "list_obj": ["all"]
+            }, {
+                "type": "modify",
+                "list_obj": ["all"]
+            }],
+            "size": 12,
+            "obj_id": 227252,
+            "obj_type": "conv",
+            "create_time": 1494497714,
+            "change_time": 1494500307,
+            "status": "actived",
+            "is_owner": false,
+            "owner_name": "Mikhail Domislavsky",
+            "owner_id": 55354,
+            "owner_login": "380506208301",
+            "title": "ТЕСТ1",
+            "description": "ПРимер 1",
+            "conv_type": "process"
+        }, {
+            "is_shared": true,
+            "favorite": false,
+            "privs": [{
+                "type": "delete",
+                "list_obj": ["all"]
+            }, {
+                "type": "create",
+                "list_obj": ["all"]
+            }, {
+                "type": "view",
+                "list_obj": ["all"]
+            }, {
+                "type": "modify",
+                "list_obj": ["all"]
+            }],
+            "size": 2,
+            "obj_id": 227261,
+            "obj_type": "conv",
+            "create_time": 1494500444,
+            "change_time": 1494500448,
+            "status": "actived",
+            "is_owner": false,
+            "owner_name": "Mikhail Domislavsky",
+            "owner_id": 55354,
+            "owner_login": "380506208301",
+            "title": "Подпроцесс",
+            "description": "",
+            "conv_type": "process"
+        }, {
+            "is_shared": true,
+            "favorite": false,
+            "privs": [{
+                "type": "delete",
+                "list_obj": ["all"]
+            }, {
+                "type": "create",
+                "list_obj": ["all"]
+            }, {
+                "type": "view",
+                "list_obj": ["all"]
+            }, {
+                "type": "modify",
+                "list_obj": ["all"]
+            }],
+            "size": 2,
+            "obj_id": 227711,
+            "obj_type": "conv",
+            "create_time": 1494712174,
+            "change_time": 1494712175,
+            "status": "actived",
+            "is_owner": false,
+            "owner_name": "Mikhail Domislavsky",
+            "owner_id": 55354,
+            "owner_login": "380506208301",
+            "title": "CurrencyOrder",
+            "description": "",
+            "conv_type": "process"
+        }, {
+            "is_shared": true,
+            "favorite": false,
+            "privs": [{
+                "type": "delete",
+                "list_obj": ["all"]
+            }, {
+                "type": "create",
+                "list_obj": ["all"]
+            }, {
+                "type": "view",
+                "list_obj": ["all"]
+            }, {
+                "type": "modify",
+                "list_obj": ["all"]
+            }],
+            "size": 3,
+            "obj_id": 227895,
+            "obj_type": "conv",
+            "create_time": 1494842425,
+            "change_time": 1494842425,
+            "status": "actived",
+            "is_owner": false,
+            "owner_name": "Mikhail Domislavsky",
+            "owner_id": 55354,
+            "owner_login": "380506208301",
+            "title": "Test2",
+            "description": "",
+            "conv_type": "state"
+        }, {
+            "is_shared": true,
+            "favorite": false,
+            "privs": [{
+                "type": "delete",
+                "list_obj": ["all"]
+            }, {
+                "type": "create",
+                "list_obj": ["all"]
+            }, {
+                "type": "view",
+                "list_obj": ["all"]
+            }, {
+                "type": "modify",
+                "list_obj": ["all"]
+            }],
+            "size": 5,
+            "obj_id": 228246,
+            "obj_type": "conv",
+            "create_time": 1494938278,
+            "change_time": 1494938584,
+            "status": "actived",
+            "is_owner": false,
+            "owner_name": "Mikhail Domislavsky",
+            "owner_id": 55354,
+            "owner_login": "380506208301",
+            "title": "TryStates",
+            "description": "",
+            "conv_type": "state"
+        }]
+    }]
+}
