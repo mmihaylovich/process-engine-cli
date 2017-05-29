@@ -10,10 +10,15 @@ import 'rxjs/add/observable/of';
 @injectable()
 class ReadProjectExecutor implements IExecutor {
     execute(params: Object): void {
-        const prj: ProjectAccessor = new ProjectAccessor(Observable.of(1))
+        const prj: ProjectAccessor = new ProjectAccessor()
+        prj.collect(Observable.of(1), this._loadedData);
+    }
+
+    private _loadedData(objs: Array<any>) {
+        console.log('loaded data:' + JSON.stringify(objs));
     }
 
 }
 
 
-export {ReadProjectExecutor}
+export { ReadProjectExecutor }

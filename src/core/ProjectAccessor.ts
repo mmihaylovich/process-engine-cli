@@ -4,31 +4,29 @@ import * as log4js from 'log4js';
 
 export class ProjectAccessor {
     private static logger = log4js.getLogger();
+    private _objects: Array<any> = [];
 
-    constructor(obs: Observable<Object>) {
-        // obs.subscribe(
-        //     (value) => {
-        //         const corezoid = new Corezoid();
-        //         corezoid.getFolders().subscribe(
-        //             (resp) => console.log(resp),
-        //             (err) => console.error(err)
-        //         )
-        //     },
-        //     (error) => {console.error(error)}
-        // )
+    public collect(obs: Observable<Object>, callback: Function) {
+        this._objects = [];
+        const that = this;
         obs.subscribe(
             (value) => {
                 const corezoid = new Corezoid();
-                corezoid.getFolders2().subscribe( (s: any) => {
-                        console.log(`next => ${JSON.stringify(s)}`);
-                        ProjectAccessor.logger.info(JSON.stringify(s));
-                    }
+                corezoid.getFolders2().subscribe(
+                    (s: any) => {
+                        that._objects.push(s);
+                        ProjectAccessor.logger.info('PREPARED:' + JSON.stringify(s));
+                    },
+                    (error) => { console.error(error) },
+                    () => { callback(that._objects) }
                 );
-                //  corezoid.getBody(232968, 'conv').subscribe((s: any) => console.log(`next => ${JSON.stringify(s)}`));
-
             },
-            (error) => { console.error(error) }
+            (error) => { console.error(error) },
         )
+    }
+
+    public getObjects() {
+        return this._objects
     }
 
 }

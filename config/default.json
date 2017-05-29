@@ -7,7 +7,7 @@
             COREZOID_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         */
         "refresh_interval" : 15,
-        "folder_id" : 133475,
+        "folder_id" : 135107,
         //"folder_id" : 0,
         "workspace" : "e:/Projects/javascript/corezoid/processes/digital/"
     }
