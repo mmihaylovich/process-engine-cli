@@ -23,8 +23,8 @@ class Corezoid {
 
     private _init(): void {
         this._url = config.get<string>('corezoid.api_url');
-        this._interval = config.get<number>('corezoid.refresh_interval');
-        this._folderId = config.get<number>('corezoid.folder_id');
+        // this._interval = config.get<number>('corezoid.refresh_interval');
+        // this._folderId = config.get<number>('corezoid.folder_id');
         this._client = restify.createJsonClient({
             url: this._url,
             headers: { 'Cookie': process.env.COREZOID_API_COOKIES }
@@ -126,6 +126,34 @@ ${StringUtils.serializeObject(obj)}
 
         return subject;
     }
+
+    getBody2(object_id: number, object_type: string): Observable<any> {
+        const subject: Subject<any> = new Subject();
+        const that = this;
+
+        consts.CRZ_REQ_SCHEME2[1].ops[0].obj_type = object_type;
+        consts.CRZ_REQ_SCHEME2[1].ops[0].obj_id = object_id;
+        StringUtils.refreshRequest(consts.CRZ_REQ_SCHEME2);
+
+        const body = <string>consts.CRZ_REQ_SCHEME2[2];
+        Corezoid.logger.debug('Request body:' + body);
+
+        this._client.post(consts.CRZ_API_2_URL
+            , consts.CRZ_REQ_SCHEME2[1]
+            , function (err: any, req: any, res: any, obj: any) {
+                if (err) {
+                    subject.error(new ErrorResult('ERAPI', err.message));
+                } else {
+                    subject.next(obj);
+                    subject.complete();
+                }
+                that.logHttp(err, req, res, obj, body);
+            });
+
+
+        return subject;
+    }
+
 
     getFolders(): Observable<Object> {
         const that = this;

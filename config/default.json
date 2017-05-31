@@ -6,9 +6,14 @@
             COREZOID_API_LOGIN=NNNNNN
             COREZOID_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         */
-        "refresh_interval" : 15,
-        "folder_id" : 135107,
-        //"folder_id" : 0,
+        
+        "watch" : {
+            // интервал в сек
+            "refresh_interval" : 60, 
+            "object_id" : 135107,
+            "object_type" : "folder"
+        },
+        
         "workspace" : "e:/Projects/javascript/corezoid/processes/digital/"
     }
 

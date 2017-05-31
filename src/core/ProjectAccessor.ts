@@ -6,19 +6,19 @@ export class ProjectAccessor {
     private static logger = log4js.getLogger();
     private _objects: Array<any> = [];
 
-    public collect(obs: Observable<Object>, callback: Function) {
+    public collect(obs: Observable<Object>, callback: Function, cb_owner: any ) {
         this._objects = [];
         const that = this;
         obs.subscribe(
             (value) => {
                 const corezoid = new Corezoid();
-                corezoid.getFolders2().subscribe(
+                corezoid.getBody2(134070, 'folder').subscribe(
                     (s: any) => {
                         that._objects.push(s);
                         ProjectAccessor.logger.info('PREPARED:' + JSON.stringify(s));
                     },
                     (error) => { console.error(error) },
-                    () => { callback(that._objects) }
+                    () => { callback(that._objects, cb_owner) }
                 );
             },
             (error) => { console.error(error) },

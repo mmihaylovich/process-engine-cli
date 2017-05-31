@@ -24,11 +24,11 @@ CRZ_REQ_SCHEME2[0] =
 `{
   "ops": [
     {
-      "obj": "obj_scheme",
       "type": "get",
-      "obj_type": "conv",
+      "obj": "obj_scheme",
       "obj_id":0,
-      "company_id":null
+      "obj_type": "conv",
+      "async": false
     }
   ]
 }`
