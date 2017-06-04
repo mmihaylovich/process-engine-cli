@@ -12,9 +12,8 @@ import { IConfigurationSelector } from './interfaces/IConfigurationSelector';
 
 const topsort = require('topsort');
 
-
 @injectable()
-class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
+export class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
 
     private _params: CorezoidWatchSettings;
     private _view_params = ['x', 'y', 'extra'];
@@ -49,12 +48,11 @@ class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
     }
 
     private _loadedDataOwned(objs: Array<any>) {
-        const that = this;
         console.log(`Received ${new Date()}`);
         try {
-            that._clearFodler();
-            // Будем качать сразу папку, а не поэлементно. Соответственно в массиве будет только один объект
-            that._extractData(objs[0]);
+            this._clearFodler();
+            this._extractData(objs[0]);
+            this._commitChanges();
         } catch (err) {
             console.log(`Error occured during store data ${err.message}`);
         }
@@ -179,7 +177,55 @@ class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
         return `${it.obj_id}-${it.title}`.replace(/[|&;$%@"<>()+,]/g, '-');
     }
 
+    private _commitChanges(): void {
+        const shell = require('shelljs');
+        let rc: { code: number, stdout: string, stderr: string } = null;
+
+        if (!shell.which('git')) {
+            console.log('Sorry, project versioning requires git');
+            return;
+        }
+        shell.pushd(this._params.workdir, { silent: true });
+        if (!fs.existsSync(this._params.workdir + '.git')) {
+            if (shell.exec('git init').code !== 0) {
+                console.log('Error: Git init failed');
+                return;
+            }
+        }
+        console.log('> git status');
+        rc = shell.exec('git status -s');
+        if (rc.code !== 0) {
+            console.log('Error: Git status failed');
+            return;
+        }
+
+        if (rc.stdout.trim().length !== 0) {
+            const lines = rc.stdout.split('\n');
+            let commitMessage = '';
+
+            lines.forEach(line => {
+                const linet = line.trim();
+                if (!linet.match(/^M.*(\.human|\.raw)\.json$/g)) {
+                    commitMessage += linet.replace(/[|&;$%@"<>()+,']/g, '') + '\t';
+                }
+            });
+            if (commitMessage.trim().length === 0) {
+                commitMessage = 'AutoCommit';
+            }
+
+            console.log('> git stage');
+            if (shell.exec('git stage *').code !== 0) {
+                console.log('Error: Git stage failed');
+                return;
+            }
+            console.log(`> git commit ${commitMessage}`);
+            if (shell.exec(`git commit -am "${commitMessage.substr(0, 120)}"`).code !== 0) {
+                console.log('Error: Git commit failed');
+                return;
+            }
+
+        }
+        shell.popd();
+    }
 }
 
-
-export { ReadProjectExecutor }
