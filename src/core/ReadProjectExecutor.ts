@@ -8,12 +8,24 @@ import 'rxjs/add/observable/of';
 import * as config from 'config';
 import * as fs from 'fs-extra';
 import {cloneDeep} from 'lodash';
+import { CorezoidWatchSettings } from '../entity/CorezoidWatchSettings';
+import { IConfigurationSelector } from './interfaces/IConfigurationSelector';
 
 @injectable()
-class ReadProjectExecutor implements IExecutor {
+class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
+
     private _watchObj: any
 
-    execute(params: Object): void {
+    getConfigurationSelector(): string {
+        return 'corezoidWatchSettings';
+    }
+    getCommand(): string {
+        return 'watch';
+    }
+
+    execute(params: CorezoidWatchSettings): void {
+        if (!(params instanceof CorezoidWatchSettings)) {return};
+
         const that = this;
         const prj: ProjectAccessor = new ProjectAccessor()
         this._watchObj = config.get<any>('corezoid.watch');

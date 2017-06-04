@@ -1,5 +1,5 @@
-import { IExecutor } from './IExecutor';
+import {IExecutionContext, IExecutor } from './IExecutor';
 
 export interface IExecutorContainer {
-    getExecutors(): Array<IExecutor>
+    getExecutors(config: any): Array<IExecutionContext>
 }
