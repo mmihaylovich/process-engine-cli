@@ -4,10 +4,10 @@ interface IConfigurationSelector {
 }
 
 class AbstractConfigurationSelector implements IConfigurationSelector {
-    getCommand(): never {
+    getCommand(): string {
         throw new Error('Method not implemented.');
     }
-    getConfigurationSelector(): never {
+    getConfigurationSelector(): string {
         throw new Error('Method not implemented.');
     }
 }

@@ -1,5 +1,5 @@
 import { IExecutorContainer } from './interfaces/IExecutorContainer';
-import { IExecutionContext,IExecutor } from './interfaces/IExecutor';
+import { IExecutionContext, IExecutor } from './interfaces/IExecutor';
 import { multiInject, injectable } from 'inversify';
 import 'reflect-metadata';
 import { IConfigurationSelector, AbstractConfigurationSelector } from "./interfaces/IConfigurationSelector";
@@ -12,18 +12,18 @@ export class ExecutorContainer implements IExecutorContainer {
         this._executors = executors;
     }
 
-    getAllExecutors (): IExecutor[] {
+    getAllExecutors(): IExecutor[] {
         return this._executors;
     }
 
     getExecutors(config: any): Array<IExecutionContext> {
         const result: Array<IExecutionContext> = [];
-        this._executors.forEach( it => {
-            if (it instanceof AbstractConfigurationSelector) {
+        this._executors.forEach( (it: any) => {
+            if (it.getConfigurationSelector && it.getCommand) {
                 const configSelector = (<IConfigurationSelector>it).getConfigurationSelector();
                 const command = (<IConfigurationSelector>it).getCommand();
-                if ( config.exec.command === command ) {
-                    result.push({executor: it, config: config[configSelector] })
+                if (config.exec.command === command) {
+                    result.push({ executor: it, config: config[configSelector] })
                 }
             }
         });

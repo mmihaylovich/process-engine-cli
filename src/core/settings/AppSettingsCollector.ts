@@ -33,7 +33,7 @@ export class AppSettingsCollector {
         const c = dotenv.config();
         cli.enable('version');
         cli.setApp('corezoid-cli', '1.0.0')
-        const options = cli.parse(AppSettingsCollector.args, null);
+        const options = cli.parse(AppSettingsCollector.args, AppSettingsCollector.commands);
         let configBody: any = null;
         if (fs.existsSync(options.config)) {
             configBody = JSON.parse(fs.readFileSync(options.config).toString());
@@ -47,9 +47,9 @@ export class AppSettingsCollector {
             new CommandLineSettingsSource(options)]
 
         srs.forEach(it => it.enrich(result));
-        AppSettingsCollector.logger.debug(JSON.stringify(result, null, 2));
+        result.exec = { command: cli.command };
 
-        result.exec = {command: cli.command};
+        AppSettingsCollector.logger.debug(JSON.stringify(result, null, 2));
 
         return result;
     }
