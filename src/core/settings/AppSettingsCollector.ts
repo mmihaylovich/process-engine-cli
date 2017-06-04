@@ -15,16 +15,16 @@ export class AppSettingsCollector {
     private static logger = log4js.getLogger();
 
     static args: CliOptions = {
-        config                  : ['c', 'Config file', 'file', 'crzconfig.json'],
-        item                    : ['i', 'Process item', 'int', null],
-        'item-kind'             : ['ik', 'Process item kind (folder | conv | dashboard)', 'string', 'folder'],
-        'output-dir'            : ['od', 'Output directory', 'string', null],
-        'api-url'               : ['au', 'Api url', 'string', null],
-        'api-login'             : ['al', 'Api login', 'string', null],
-        'api-key'               : ['ak', 'Api key', 'string', null],
-        'api-auth-kind'         : ['aa', 'Api auth kind', 'string', 'api-key'],
-        'api-cookie'            : ['ac', 'Api cookie', 'string', null],
-        'refresh-interval'      : ['ri', 'Refresh interval in seconds', 'int', null]
+        config: ['c', 'Config file', 'file', 'crzconfig.json'],
+        item: ['i', 'Process item', 'int', null],
+        'item-kind': ['ik', 'Process item kind (folder | conv | dashboard)', 'string', 'folder'],
+        'output-dir': ['od', 'Output directory', 'string', null],
+        'api-url': ['au', 'Api url', 'string', null],
+        'api-login': ['al', 'Api login', 'string', null],
+        'api-key': ['ak', 'Api key', 'string', null],
+        'api-auth-kind': ['aa', 'Api auth kind', 'string', 'api-key'],
+        'api-cookie': ['ac', 'Api cookie', 'string', null],
+        'refresh-interval': ['ri', 'Refresh interval in seconds', 'int', null]
     }
 
     static commands: CliCommands = ['watch'];
@@ -32,8 +32,10 @@ export class AppSettingsCollector {
     static collectSettings(): AppSettings {
         const dotenv = require('dotenv');
         const c = dotenv.config();
+        (<any>cli).option_width = 40;
+        (<any>cli).width = 80;
         cli.enable('version');
-        cli.setApp('corezoid-cli', '1.0.0')
+        cli.setApp('crz', '1.0.0')
         const options = cli.parse(AppSettingsCollector.args, AppSettingsCollector.commands);
         let configBody: any = null;
         if (fs.existsSync(options.config)) {
