@@ -27,6 +27,8 @@ export class CommandLineSettingsSource implements ISettingsSource {
                 Tools.coalesce(this._configuration['refresh-interval'], settings.corezoidWatchSettings.interval);
             settings.corezoidWatchSettings.process.id =
                 Tools.coalesce(this._configuration['item'], settings.corezoidWatchSettings.process.id);
+            settings.corezoidWatchSettings.process.objectType =
+                Tools.coalesce(this._configuration['item-kind'], settings.corezoidWatchSettings.process.objectType);
             settings.corezoidWatchSettings.workdir =
                 Tools.coalesce(this._configuration['output-dir'], settings.corezoidWatchSettings.workdir);
         }

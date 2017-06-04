@@ -4,27 +4,28 @@ import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 import { Subject } from 'rxjs/Subject';
 import { ErrorResult } from '../entity/ErrorResult';
-import * as config from 'config';
 import * as restify from 'restify';
 import * as log4js from 'log4js';
 import { StringUtils } from '../utils/StringUtils';
 import * as sha1 from 'sha1';
+import { CorezoidApiSettings } from '../entity/CorezoidApiSettings';
 
-class Corezoid {
+export class Corezoid {
     private static logger = log4js.getLogger();
     private _interval: number
     private _url: string
     private _client: any
     private _folderId: number
+    private _config: CorezoidApiSettings
 
-    constructor() {
+    constructor ( config: CorezoidApiSettings) {
+        this._config = config;
         this._init();
     }
 
     private _init(): void {
-        this._url = config.get<string>('corezoid.api_url');
-        // this._interval = config.get<number>('corezoid.refresh_interval');
-        // this._folderId = config.get<number>('corezoid.folder_id');
+        this._url = this._config.url;
+
         this._client = restify.createJsonClient({
             url: this._url,
             headers: { 'Cookie': process.env.COREZOID_API_COOKIES }
@@ -231,7 +232,7 @@ ${StringUtils.serializeObject(obj)}
     private ls(folder: number): Observable<any> {
         const that = this;
         return this.readdir(folder).flatMap(function (files: any) {
-            return Observable.from(files).flatMap( (files2: any) => that.enrich(files2));
+            return Observable.from(files).flatMap((files2: any) => that.enrich(files2));
         });
     }
 
@@ -275,5 +276,3 @@ ${StringUtils.serializeObject(obj)}
             })
     }
 };
-
-export { Corezoid }

@@ -26,6 +26,8 @@ export class ConfigFileSettingsSource implements ISettingsSource {
                     Tools.coalesce(this._configuration.watch.refresh_interval, settings.corezoidWatchSettings.interval);
                 settings.corezoidWatchSettings.process.id =
                     Tools.coalesce(this._configuration.watch.object_id, settings.corezoidWatchSettings.process.id);
+                settings.corezoidWatchSettings.process.objectType =
+                    Tools.coalesce(this._configuration.watch.object_type, settings.corezoidWatchSettings.process.objectType);
                 settings.corezoidWatchSettings.workdir =
                     Tools.coalesce(this._configuration.watch.workdir, settings.corezoidWatchSettings.workdir);
             }

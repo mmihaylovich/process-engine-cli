@@ -15,15 +15,16 @@ export class AppSettingsCollector {
     private static logger = log4js.getLogger();
 
     static args: CliOptions = {
-        config: ['c', 'Config file', 'file', 'crzconfig.json'],
-        item: ['i', 'Process item', 'int', null],
-        'output-dir': ['od', 'Output directory', 'string', null],
-        'api-url': ['au', 'Api url', 'string', null],
-        'api-login': ['al', 'Api login', 'string', null],
-        'api-key': ['ak', 'Api key', 'string', null],
-        'api-auth-kind': ['aa', 'Api auth kind', 'string', 'api-key'],
-        'api-cookie': ['ac', 'Api cookie', 'string', null],
-        'refresh-interval': ['ri', 'Refresh interval in seconds', 'int', null]
+        config                  : ['c', 'Config file', 'file', 'crzconfig.json'],
+        item                    : ['i', 'Process item', 'int', null],
+        'item-kind'             : ['ik', 'Process item kind (folder | conv | dashboard)', 'string', 'folder'],
+        'output-dir'            : ['od', 'Output directory', 'string', null],
+        'api-url'               : ['au', 'Api url', 'string', null],
+        'api-login'             : ['al', 'Api login', 'string', null],
+        'api-key'               : ['ak', 'Api key', 'string', null],
+        'api-auth-kind'         : ['aa', 'Api auth kind', 'string', 'api-key'],
+        'api-cookie'            : ['ac', 'Api cookie', 'string', null],
+        'refresh-interval'      : ['ri', 'Refresh interval in seconds', 'int', null]
     }
 
     static commands: CliCommands = ['watch'];
@@ -48,6 +49,8 @@ export class AppSettingsCollector {
 
         srs.forEach(it => it.enrich(result));
         result.exec = { command: cli.command };
+
+        result.corezoidWatchSettings.api = result.corezoidApiSettings;
 
         AppSettingsCollector.logger.debug(JSON.stringify(result, null, 2));
 
