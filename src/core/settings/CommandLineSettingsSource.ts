@@ -17,7 +17,7 @@ export class CommandLineSettingsSource implements ISettingsSource {
             settings.corezoidApiSettings.keySecret = Tools.coalesce(this._configuration['api-key'], settings.corezoidApiSettings.keySecret);
             settings.corezoidApiSettings.cookie = Tools.coalesce(this._configuration['api-cookie'], settings.corezoidApiSettings.cookie);
             if (this._configuration['api-auth-kind']) {
-                settings.corezoidApiSettings.viaCookie = this._configuration['api-auth-kind'];
+                settings.corezoidApiSettings.viaCookie = this._configuration['api-auth-kind'] !== 'api-key';
             }
 
             settings.corezoidWatchSettings = settings.corezoidWatchSettings || new CorezoidWatchSettings();

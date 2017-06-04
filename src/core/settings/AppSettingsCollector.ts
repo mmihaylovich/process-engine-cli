@@ -22,7 +22,7 @@ export class AppSettingsCollector {
         'api-url': ['au', 'Api url', 'string', null],
         'api-login': ['al', 'Api login', 'string', null],
         'api-key': ['ak', 'Api key', 'string', null],
-        'api-auth-kind': ['aa', 'Api auth kind', 'string', 'api-key'],
+        'api-auth-kind': ['aa', 'Api auth kind (api-key | cookie)', 'string', null],
         'api-cookie': ['ac', 'Api cookie', 'string', null],
         'refresh-interval': ['ri', 'Refresh interval in seconds', 'int', null]
     }
