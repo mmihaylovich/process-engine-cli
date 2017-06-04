@@ -2,7 +2,7 @@ import { IExecutorContainer } from './interfaces/IExecutorContainer';
 import { IExecutionContext, IExecutor } from './interfaces/IExecutor';
 import { multiInject, injectable } from 'inversify';
 import 'reflect-metadata';
-import { IConfigurationSelector, AbstractConfigurationSelector } from "./interfaces/IConfigurationSelector";
+import { IConfigurationSelector, AbstractConfigurationSelector } from './interfaces/IConfigurationSelector';
 
 @injectable()
 export class ExecutorContainer implements IExecutorContainer {

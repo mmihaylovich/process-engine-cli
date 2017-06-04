@@ -114,7 +114,7 @@ export class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
 
     private _divideOneFile(it: any, folder: string): void {
         if (it.obj_type === 1 && it.scheme && it.scheme.nodes) {
-            // пересортируем
+            // sorting nodes for constant order
             it.scheme.nodes.sort((a: any, b: any) => {
                 if (a.id < b.id) { return -1; }
                 if (a.id > b.id) { return 1; }
@@ -128,7 +128,7 @@ export class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
         const viewObject: any = cloneDeep(it);
 
         const scripts: Array<any> = [];
-        // в этом экземпляре уберем элементы связанные со view
+        // in this scheme delete visual parameters
         if (it.scheme && it.scheme.nodes) {
             it.scheme.nodes.forEach((n: any) => {
                 this._view_params.forEach(element => {
@@ -165,10 +165,10 @@ export class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
                 fs.writeFileSync(`${assetsDir}/${src.id}.js`, src.src);
             })
         }
-        // сохраним view
+        // storing view part
         newFile = `${folder}${this._getItemName(it)}.view.json`;
         fs.writeFileSync(newFile, JSON.stringify([viewObject], null, 4));
-        // сохраним логику
+        // storing logic part
         newFile = `${folder}${this._getItemName(it)}.logic.json`;
         fs.writeFileSync(newFile, JSON.stringify([it], null, 4));
     }
