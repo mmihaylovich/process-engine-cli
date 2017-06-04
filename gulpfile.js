@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var exec = require('child_process').exec;
 
 gulp.task('build', ['compile'], function () {
-  return gulp.src(['./config/**/*.json','package.json'])
+  return gulp.src(['./config/**/*.json','package.json','LICENSE'])
     .pipe(gulp.dest('./built'));
 });
 

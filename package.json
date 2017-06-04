@@ -1,7 +1,7 @@
 {
-  "name": "corezoid-watcher",
+  "name": "corezoid-cli-unofficial",
   "version": "1.0.0",
-  "description": "Corezoid command line tool",
+  "description": "Unofficial Corezoid command line tool",
   "main": "./src/crz.js",
   "dependencies": {
     "@types/circular-json": "^0.1.30",
