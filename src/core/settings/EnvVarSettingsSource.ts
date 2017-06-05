@@ -1,7 +1,7 @@
 import { ISettingsSource } from './ISettingsSource';
-import { AppSettings } from "../../entity/AppSettings";
-import { CorezoidApiSettings } from "../../entity/CorezoidApiSettings";
-import { Tools } from "../../utils/Tools";
+import { AppSettings } from '../../entity/AppSettings';
+import { CorezoidApiSettings } from '../../entity/CorezoidApiSettings';
+import { Tools } from '../../utils/Tools';
 
 export class EnvVarSettingsSource implements ISettingsSource {
 

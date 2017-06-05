@@ -5,6 +5,7 @@ import { Observer } from 'rxjs/Observer';
 import { Subject } from 'rxjs/Subject';
 import { ErrorResult } from '../entity/ErrorResult';
 import * as restify from 'restify';
+import {ClientOptions} from 'restify';
 import * as log4js from 'log4js';
 import { StringUtils } from '../utils/StringUtils';
 import * as sha1 from 'sha1';
@@ -25,11 +26,12 @@ export class Corezoid {
 
     private _init(): void {
         this._url = this._config.url;
+        const options: ClientOptions = {url: this._url}
+        if (this._config.viaCookie) {
+            options.headers = { 'Cookie': process.env.COREZOID_API_COOKIES };
+        }
 
-        this._client = restify.createJsonClient({
-            url: this._url,
-            headers: { 'Cookie': process.env.COREZOID_API_COOKIES }
-        });
+        this._client = restify.createJsonClient(options);
     }
 
     /**
@@ -53,6 +55,10 @@ export class Corezoid {
      */
     private appendAuth(url: string, body: string): string {
         let result = url;
+        // if user going to authenticate with cookie security suffix is not needed
+        if (this._config.viaCookie) {
+            return result;
+        }
         const epoch = new Date().getTime().toString();
         const login = process.env.COREZOID_API_LOGIN;
         const secret = process.env.COREZOID_API_KEY;
