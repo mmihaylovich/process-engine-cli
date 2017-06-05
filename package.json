@@ -4,6 +4,10 @@
   "description": "Сommand line tool for a process-engine service",
   "main": ".built/crz.js",
   "types": ".built/crz.d.ts",
+  "bugs": {
+    "url": "https://github.com/mmihaylovich/process-engine-cli/issues"
+  },
+  "homepage": "https://github.com/mmihaylovich/process-engine-cli",
   "dependencies": {
     "@types/circular-json": "^0.1.30",
     "assert": "^1.4.1",
