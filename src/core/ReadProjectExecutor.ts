@@ -29,6 +29,11 @@ export class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
 
     execute(params: CorezoidWatchSettings): void {
         if (!(params instanceof CorezoidWatchSettings)) { return };
+        const validation = params.isValid();
+        if (!validation.valid) {
+            validation.messages.forEach(it => console.log(`Validation error: ${it}`));
+            return
+        }
 
         const that = this;
         this._params = params;
