@@ -9,7 +9,9 @@
 *.sublime-workspace
 .settings
 .vscode
+/.vscode
 
 # Misc
 npm-debug.log
 .DS_STORE
+
