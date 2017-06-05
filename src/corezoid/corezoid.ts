@@ -56,9 +56,9 @@ export class Corezoid {
     private appendAuth(url: string, body: string): string {
         let result = url;
         // if user going to authenticate with cookie security suffix is not needed
-        // if (this._config.viaCookie) {
-        //     return result;
-        // }
+        if (this._config.viaCookie) {
+            return result;
+        }
         const epoch = new Date().getTime().toString();
         const login = process.env.COREZOID_API_LOGIN;
         const secret = process.env.COREZOID_API_KEY;
@@ -70,21 +70,7 @@ export class Corezoid {
 
         return result;
     }
-    /*
-        private appendAuthDownload(url: string, body: string): string {
-            let result = url;
-            const epoch = new Date().getTime().toString();
-            const login = process.env.COREZOID_API_LOGIN;
-            const secret = process.env.COREZOID_API_KEY;
-            const signature = sha1(epoch + secret + body + secret);
-            if (!result.endsWith('/')) {
-                result = result + '/';
-            }
-            result = `${result}${login}/${epoch}/${signature}`;
     
-            return result;
-        }
-    */
     private logHttp(err: any, req: any, res: any, obj: any, reqBody: any): void {
         Corezoid.logger.debug(
             `
@@ -106,34 +92,7 @@ ${StringUtils.serializeObject(obj)}
     getFoldersRecursively(): Observable<any> {
         return this.expanddir(this._folderId);
     }
-    /*
-        getBody(object_id: number, object_type: string): Observable<any> {
-            const subject: Subject<any> = new Subject();
-            const that = this;
     
-            consts.CRZ_REQ_SCHEME[1].ops[0].obj_type = object_type;
-            consts.CRZ_REQ_SCHEME[1].ops[0].obj_id = object_id;
-            StringUtils.refreshRequest(consts.CRZ_REQ_SCHEME);
-    
-            const body = <string>consts.CRZ_REQ_SCHEME[2];
-            Corezoid.logger.debug('Request body:' + body);
-    
-            this._client.post(consts.CRZ_API_2_URL_DOWNLOAD
-                , consts.CRZ_REQ_SCHEME[1]
-                , function (err: any, req: any, res: any, obj: any) {
-                    if (err) {
-                        subject.error(new ErrorResult('ERAPI', err.message));
-                    } else {
-                        subject.next(obj);
-                        subject.complete();
-                    }
-                    that.logHttp(err, req, res, obj, body);
-                });
-    
-    
-            return subject;
-        }
-    */
     getBody(object_id: number, object_type: string): Observable<any> {
         const subject: Subject<any> = new Subject();
         const that = this;
