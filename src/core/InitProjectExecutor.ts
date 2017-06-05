@@ -18,7 +18,7 @@ export class InitProjectExecutor implements IExecutor, IConfigurationSelector {
         const envBody =
 `COREZOID_API_LOGIN=
 COREZOID_API_KEY=
-COREZOID_API_COOKIES=
+COREZOID_USER_COOKIE=
 `
         const crzconfigBody =
 `{

@@ -28,7 +28,7 @@ export class Corezoid {
         this._url = this._config.url;
         const options: ClientOptions = { url: this._url }
         if (this._config.viaCookie) {
-            options.headers = { 'Cookie': process.env.COREZOID_API_COOKIES };
+            options.headers = { 'Cookie': this._config.cookie };
         }
 
         this._client = restify.createJsonClient(options);
@@ -70,7 +70,7 @@ export class Corezoid {
 
         return result;
     }
-    
+
     private logHttp(err: any, req: any, res: any, obj: any, reqBody: any): void {
         Corezoid.logger.debug(
             `
@@ -92,7 +92,7 @@ ${StringUtils.serializeObject(obj)}
     getFoldersRecursively(): Observable<any> {
         return this.expanddir(this._folderId);
     }
-    
+
     getBody(object_id: number, object_type: string): Observable<any> {
         const subject: Subject<any> = new Subject();
         const that = this;
