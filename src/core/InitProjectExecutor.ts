@@ -28,7 +28,7 @@ COREZOID_USER_COOKIE=
         "refresh_interval": 60,
         "object_id": 0,
         "object_type": "folder",
-        "workdir": "C:/Projects/"
+        "workdir": "./workdir/"
     }
 }
 `

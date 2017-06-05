@@ -64,10 +64,16 @@ export class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
 
     private _clearFodler(): void {
         const folder = this._params.workdir;
-        const items = fs.readdirSync(folder)
-        for (let i = 0; i < items.length; i++) {
-            if (!(<string>items[i]).startsWith('.git')) {
-                fs.removeSync(folder + items[i])
+        // create folder if not exists
+        if (!fs.existsSync(folder)) {
+            const mkdirp = require('mkdirp');
+            mkdirp.sync(folder);
+        } else {
+            const items = fs.readdirSync(folder)
+            for (let i = 0; i < items.length; i++) {
+                if (!(<string>items[i]).startsWith('.git')) {
+                    fs.removeSync(folder + items[i])
+                }
             }
         }
     }
@@ -190,11 +196,6 @@ export class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
             return;
         }
 
-        // create folder if not exists
-        if (!fs.existsSync(this._params.workdir)) {
-            const mkdirp = require('mkdirp');
-            mkdirp.sync(this._params.workdir);
-        }
         shell.pushd(this._params.workdir, { silent: true });
         if (!fs.existsSync(this._params.workdir + '.git')) {
             if (shell.exec('git init').code !== 0) {
