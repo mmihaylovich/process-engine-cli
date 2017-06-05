@@ -46,7 +46,9 @@
     "prebuild": "npm-run-all clean_built",
     "build": "npm-run-all compile",
     "postbuild": "npm-run-all generate_packages copy_bin",
-    "copy_bin": "mkdirp ./built/bin && shx cp -r ./bin/* ./built/bin"
+    "copy_bin": "mkdirp ./built/bin && shx cp -r ./bin/* ./built/bin",
+    "patch_version": "npm version patch",
+    "prepare_publish": "npm-run-all patch_version build"
   },
   "bin": {
     "crz": "./bin/crz"
