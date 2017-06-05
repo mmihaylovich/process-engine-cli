@@ -1,8 +1,9 @@
 {
-  "name": "corezoid-cli-unofficial",
-  "version": "1.0.0",
-  "description": "Unofficial Corezoid command line tool",
-  "main": "./src/crz.js",
+  "name": "process-engine-cli",
+  "version": "0.1.0",
+  "description": "Сommand line tool for a process-engine service",
+  "main": ".built/crz.js",
+  "types": ".built/crz.d.ts",
   "dependencies": {
     "@types/circular-json": "^0.1.30",
     "assert": "^1.4.1",
@@ -13,6 +14,7 @@
     "inversify": "^4.1.0",
     "lodash": "^4.17.4",
     "log4js": "^1.1.1",
+    "mkdirp": "^0.5.1",
     "reflect-metadata": "^0.1.10",
     "restify": "^4.3.0",
     "rxjs": "^5.4.0",
@@ -30,13 +32,16 @@
     "@types/node": "^7.0.22",
     "@types/restify": "^4.3.2",
     "@types/rx": "^4.1.1",
-    "gulp": "^3.9.1",
+    "mkdirp": "^0.5.1",
+    "npm-run-all": "^4.0.2",
     "typescript": "^2.3.3"
   },
   "scripts": {
+    "generate_packages": "node .make-packages.js",
+    "clean_built": "shx rm -rf ./built",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prestart": "gulp",
-    "start": "node built/crz.js",
+    "prestart": "npm-run-all clean_built build generate_packages",
+    "start": "node ./built/crz.js",
     "build": "tsc"
   },
   "author": "Domislavskiy Mikhail",

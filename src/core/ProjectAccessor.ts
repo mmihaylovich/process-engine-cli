@@ -18,7 +18,7 @@ export class ProjectAccessor {
         obs.subscribe(
             (value) => {
                 const corezoid = new Corezoid(that._config);
-                corezoid.getBody2(that._item.id, that._item.objectType).subscribe(
+                corezoid.getBody(that._item.id, that._item.objectType).subscribe(
                     (s: any) => {
                         that._objects.push(s);
                         ProjectAccessor.logger.info('PREPARED:' + JSON.stringify(s));

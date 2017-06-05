@@ -1,7 +1,7 @@
-# corezoid-cli-unofficial
+# process-engine-cli
 
-Command line tool for Cloud Process Engine "Corezoid".
-The tool use official [Corezoid Api](https://doc.corezoid.com/en/api/ "Corezoid Api")  
+Command line tool for certain process engine.
+The tool use [public api](https://doc.corezoid.com/en/api/ "Corezoid Api")  of the process engine.
 
 ### Install
 

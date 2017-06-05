@@ -1,3 +1,15 @@
 /node_modules
 /built
 /logs
+/.env
+
+# Editor-specific
+.idea/
+*.sublime-project
+*.sublime-workspace
+.settings
+.vscode
+
+# Misc
+npm-debug.log
+.DS_STORE

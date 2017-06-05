@@ -14,7 +14,7 @@ type CliCommands = { [name: string]: string } | string[];
 export class AppSettingsCollector {
     private static logger = log4js.getLogger();
 
-    static args: CliOptions = {
+    private static args: CliOptions = {
         config: ['c', 'Config file', 'file', 'crzconfig.json'],
         item: ['i', 'Process item', 'int', null],
         'item-kind': ['ik', 'Process item kind (folder | conv | dashboard)', 'string', 'folder'],
@@ -27,7 +27,7 @@ export class AppSettingsCollector {
         'refresh-interval': ['ri', 'Refresh interval in seconds', 'int', null]
     }
 
-    static commands: CliCommands = ['watch'];
+    private static commands: CliCommands = ['watch'];
 
     static collectSettings(): AppSettings {
         const dotenv = require('dotenv');

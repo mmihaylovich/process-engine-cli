@@ -64,7 +64,7 @@ export class Corezoid {
 
         return result;
     }
-
+/*
     private appendAuthDownload(url: string, body: string): string {
         let result = url;
         const epoch = new Date().getTime().toString();
@@ -78,7 +78,7 @@ export class Corezoid {
 
         return result;
     }
-
+*/
     private logHttp(err: any, req: any, res: any, obj: any, reqBody: any): void {
         Corezoid.logger.debug(
             `
@@ -97,10 +97,10 @@ ${StringUtils.serializeObject(obj)}
         );
     }
 
-    getFolders2(): Observable<any> {
+    getFoldersRecursively(): Observable<any> {
         return this.expanddir(this._folderId);
     }
-
+/*
     getBody(object_id: number, object_type: string): Observable<any> {
         const subject: Subject<any> = new Subject();
         const that = this;
@@ -127,8 +127,8 @@ ${StringUtils.serializeObject(obj)}
 
         return subject;
     }
-
-    getBody2(object_id: number, object_type: string): Observable<any> {
+*/
+    getBody(object_id: number, object_type: string): Observable<any> {
         const subject: Subject<any> = new Subject();
         const that = this;
 

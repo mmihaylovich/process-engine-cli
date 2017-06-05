@@ -7,9 +7,10 @@
         "preserveConstEnums": true,
         "outDir": "./built",
         "sourceMap": true,
+        "declaration": true,
         "target": "es2017",
         "lib": [
-            "es2017","dom","es2015.symbol"
+            "es2017","dom"
         ],
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
