@@ -14,7 +14,7 @@ import * as log4js from 'log4js';
  */
 class Application {
     static main(): void {
-        log4js.configure('config/log4js.json');
+        log4js.configure('log4js.json');
         const container =  myContainer.get<IExecutorContainer>(TYPES.IExecutorContainer);
         (new Application(container)).start();
     }
