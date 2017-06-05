@@ -189,6 +189,12 @@ export class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
             console.log('Sorry, project versioning requires git');
             return;
         }
+
+        // create folder if not exists
+        if (!fs.existsSync(this._params.workdir)) {
+            const mkdirp = require('mkdirp');
+            mkdirp.sync(this._params.workdir);
+        }
         shell.pushd(this._params.workdir, { silent: true });
         if (!fs.existsSync(this._params.workdir + '.git')) {
             if (shell.exec('git init').code !== 0) {
