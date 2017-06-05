@@ -44,6 +44,9 @@
     "start": "node ./built/crz.js",
     "build": "tsc"
   },
+  "bin": {
+    "crz": "./bin/crz"
+  },
   "author": "Domislavskiy Mikhail",
   "license": "ISC"
 }
