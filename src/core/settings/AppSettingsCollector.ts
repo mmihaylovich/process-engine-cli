@@ -27,7 +27,7 @@ export class AppSettingsCollector {
         'refresh-interval': ['ri', 'Refresh interval in seconds', 'int', null]
     }
 
-    private static commands: CliCommands = ['watch'];
+    private static commands: CliCommands = ['watch', 'init'];
 
     static collectSettings(): AppSettings {
         const dotenv = require('dotenv');

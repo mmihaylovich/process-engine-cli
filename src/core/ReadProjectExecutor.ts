@@ -10,11 +10,10 @@ import { cloneDeep } from 'lodash';
 import { CorezoidWatchSettings } from '../entity/CorezoidWatchSettings';
 import { IConfigurationSelector } from './interfaces/IConfigurationSelector';
 
-const topsort = require('topsort');
+
 
 @injectable()
 export class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
-
     private _params: CorezoidWatchSettings;
     private _view_params = ['x', 'y', 'extra'];
     private _identity_params = ['id', 'title'];
@@ -92,7 +91,7 @@ export class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
                 return [el.parent_id, el.obj_id]
             }
         );
-
+        const topsort = require('topsort');
         const sorted = topsort(edges);
 
         sorted.forEach((el: number) => {
