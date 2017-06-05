@@ -40,9 +40,13 @@
     "generate_packages": "node .make-packages.js",
     "clean_built": "shx rm -rf ./built",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prestart": "npm-run-all clean_built build generate_packages",
+    "prestart": "npm-run-all clean_built compile",
     "start": "node ./built/crz.js",
-    "build": "tsc"
+    "compile": "tsc",
+    "prebuild": "npm-run-all clean_built",
+    "build": "npm-run-all compile",
+    "postbuild": "npm-run-all generate_packages copy_bin",
+    "copy_bin": "mkdirp ./built/bin && shx cp -r ./bin/* ./built/bin"
   },
   "bin": {
     "crz": "./bin/crz"
