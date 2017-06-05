@@ -1,6 +1,6 @@
 {
   "name": "process-engine-cli",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Сommand line tool for a process-engine service",
   "main": ".built/crz.js",
   "types": ".built/crz.d.ts",
