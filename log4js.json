@@ -1,7 +1,7 @@
 {
     "appenders": [{
             "type": "file",
-            "filename": "logs/corezoid.log",
+            "filename": "logs/process_engine.log",
             "backups": 3,
             "level": "DEBUG"
         }
