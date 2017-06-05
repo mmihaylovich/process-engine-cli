@@ -197,7 +197,7 @@ export class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
         }
 
         shell.pushd(this._params.workdir, { silent: true });
-        if (!fs.existsSync(this._params.workdir + '.git')) {
+        if (!fs.existsSync('.git')) {
             if (shell.exec('git init').code !== 0) {
                 console.log('Error: Git init failed');
                 return;
