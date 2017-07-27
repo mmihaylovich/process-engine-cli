@@ -4,8 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 import { Subject } from 'rxjs/Subject';
 import { ErrorResult } from '../entity/ErrorResult';
-import * as restify from 'restify';
-import { ClientOptions } from 'restify';
+import * as restify from 'restify-clients';
 import * as log4js from 'log4js';
 import { StringUtils } from '../utils/StringUtils';
 import * as sha1 from 'sha1';
@@ -26,7 +25,7 @@ export class Corezoid {
 
     private _init(): void {
         this._url = this._config.url;
-        const options: ClientOptions = { url: this._url }
+        const options: any = { url: this._url }
         if (this._config.viaCookie) {
             options.headers = { 'Cookie': this._config.cookie };
         }

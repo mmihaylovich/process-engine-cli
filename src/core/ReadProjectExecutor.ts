@@ -90,11 +90,14 @@ export class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
             fs.writeFileSync(`${folder}${this._params.process.id}.human.json`, hjson);
         }
         // before export we should sort it topologicaly (accordignly dependencies)
+        const objTypeIdShift = 1000000000
         const index: Map<number, any> = new Map<number, any>();
         const edges = obj.ops[0].scheme.map(
             (el: any) => {
-                index.set(el.obj_id, el);
-                return [el.parent_id, el.obj_id]
+                const objId = objTypeIdShift * el.obj_type + el.obj_id;
+                index.set(objId, el);
+                return [el.parent_id /*parents are always folders with obj_type=0, thus any shift not needed*/
+                        , objId]
             }
         );
         const topsort = require('topsort');

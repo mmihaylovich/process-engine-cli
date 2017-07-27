@@ -20,8 +20,8 @@
     "log4js": "^1.1.1",
     "mkdirp": "^0.5.1",
     "reflect-metadata": "^0.1.10",
-    "restify": "^4.3.0",
-    "rxjs": "^5.4.0",
+    "restify-clients": "^1.5.0",
+    "rxjs": "^5.4.2",
     "sha1": "^1.1.1",
     "shelljs": "^0.7.7",
     "topsort": "0.0.2"
@@ -34,11 +34,10 @@
     "@types/lodash": "^4.14.64",
     "@types/log4js": "0.0.32",
     "@types/node": "^7.0.22",
-    "@types/restify": "^4.3.2",
     "@types/rx": "^4.1.1",
     "mkdirp": "^0.5.1",
     "npm-run-all": "^4.0.2",
-    "typescript": "^2.3.3"
+    "typescript": "^2.4.2"
   },
   "scripts": {
     "generate_packages": "node .make-packages.js",
