@@ -1,6 +1,7 @@
 perf
 spec
 .git
+.bak
 yarn.lock
 coverage
 typings/
