@@ -24,6 +24,11 @@ class CorezoidWatchSettings {
      */
     workdir: string;
 
+    /**
+     * array of folder that will not be deleted during synchronize corezoid process
+     */
+    staticFolders: Array<string>;
+
     isValid(): ValidationResult {
         const result = new ValidationResult();
         if (!this.api) {

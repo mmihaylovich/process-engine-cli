@@ -30,6 +30,8 @@ export class ConfigFileSettingsSource implements ISettingsSource {
                     Tools.coalesce(this._configuration.watch.object_type, settings.corezoidWatchSettings.process.objectType);
                 settings.corezoidWatchSettings.workdir =
                     Tools.coalesce(this._configuration.watch.workdir, settings.corezoidWatchSettings.workdir);
+                settings.corezoidWatchSettings.staticFolders=
+                    Tools.coalesce(this._configuration.watch.staticFolders, settings.corezoidWatchSettings.staticFolders);
             }
         }
     }

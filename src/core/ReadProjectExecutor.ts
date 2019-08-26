@@ -36,6 +36,11 @@ export class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
 
         const that = this;
         this._params = params;
+        if (!this._params.staticFolders) {
+            this._params.staticFolders =[];
+        }
+        this._params.staticFolders.push('.git');
+
         const prj: ProjectAccessor = new ProjectAccessor(this._params.api, this._params.process);
 
         const source = Observable
@@ -70,8 +75,9 @@ export class ReadProjectExecutor implements IExecutor, IConfigurationSelector {
             mkdirp.sync(folder);
         } else {
             const items = fs.readdirSync(folder)
+            
             for (let i = 0; i < items.length; i++) {
-                if (!(<string>items[i]).startsWith('.git')) {
+                if ( this._params.staticFolders.indexOf(<string>items[i])<0 ) {
                     fs.removeSync(folder + items[i])
                 }
             }

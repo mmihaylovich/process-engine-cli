@@ -35,7 +35,6 @@
     "@types/log4js": "0.0.32",
     "@types/node": "^7.0.22",
     "@types/rx": "^4.1.1",
-    "mkdirp": "^0.5.1",
     "npm-run-all": "^4.0.2",
     "typescript": "^2.4.2"
   },
